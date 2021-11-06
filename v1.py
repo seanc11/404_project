@@ -34,6 +34,8 @@ dt = .001;
 # Itterations [n]
 I = 10000;
 
+# blah blah blah
+
 dropDs = np.zeros(numDrops);
 dropAs = np.zeros(numDrops);
 
