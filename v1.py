@@ -34,8 +34,6 @@ dt = .001;
 # Itterations [n]
 I = 10000;
 
-# blah blah blah
-
 dropDs = np.zeros(numDrops);
 dropAs = np.zeros(numDrops);
 
@@ -49,8 +47,6 @@ vX[0,:] = v0x;
 
 Y = np.zeros((I, numDrops));
 vY = np.zeros((I, numDrops));
-
-#sdifisdf
 
 # Calculations
 for i in range(numDrops) :
