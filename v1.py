@@ -91,6 +91,17 @@ for i in range(I) :
             X[i+1,j] = X[i,j]+vX[i,j]*dt;
             Y[i+1,j] = Y[i,j]+vY[i,j]*dt;
         
-
+        
+paths = plt.figure()
+plt.ylabel('Y Position (m)')
+plt.xlabel('X Position (m)')
+plt.title('Droplet Flight Paths')
 for i in range(numDrops) :
     plt.plot(X,Y);
+
+masses = plt.figure()
+plt.ylabel('Droplet Landing Point (m)')
+plt.xlabel('Droplet Mass (kg)')
+plt.title('Droplet Flight Distance vs Droplet Mass')
+for j in range(numDrops) :
+    plt.scatter(massD, X[len(X)-1]);
