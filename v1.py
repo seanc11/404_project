@@ -38,7 +38,8 @@ dropDs = np.zeros(numDrops);
 dropAs = np.zeros(numDrops);
 
 massD = np.zeros(numDrops);
-forceDrag = np.zeros((I, numDrops));
+forceDragX = np.zeros((I, numDrops));
+forceDragY = np.zeros((I, numDrops));
 
 X = np.zeros((I, numDrops));
 vX = np.zeros((I, numDrops));
@@ -72,13 +73,13 @@ for i in range(I) :
     t = t+dt;
     for j in range(numDrops) :
         
-        # TODO do something with this, rename for x and make another for y, get rid of it, or save the magnitude
-        forceDrag[i,j] = -0.5*rhoA*cD*dropAs[j]*vX[i,j]**2; 
+        forceDragX[i,j] = -0.5*rhoA*cD*dropAs[j]*vX[i,j]**2; 
+        forceDragY[i,j] = 0.5*rhoA*cD*dropAs[j]*vY[i,j]**2; #should have different sign from x
         
         # NOTE drag is assumed to be negative for x and positive for y. This may not be the case. Ideally, it would depend on the velocity vector
-        aX = forceDrag[i,j]/massD[j];
+        aX = forceDragX[i,j]/massD[j];
         # aY = 0.5*rhoA*cD*dropAs[j]*vY[i,j]**2/massD[j] - 9.81;
-        aY = 0.5*rhoA*cD*dropAs[j]*vY[i,j]**2/massD[j] - 9.81;
+        aY = forceDragY[i,j]/massD[j] - 9.81;
         
         if i < I-1:
             # Apply drag
@@ -87,8 +88,8 @@ for i in range(I) :
             vY[i+1,j] = vY[i,j]+aY*dt;
         
             # Generate X and Y positions with drag and gravity
-            X[i+1,j] = X[i,j]+vX[i,j];
-            Y[i+1,j] = Y[i,j]+vY[i,j];
+            X[i+1,j] = X[i,j]+vX[i,j]*dt;
+            Y[i+1,j] = Y[i,j]+vY[i,j]*dt;
         
 
 for i in range(numDrops) :
