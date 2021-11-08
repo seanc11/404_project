@@ -8,7 +8,7 @@ dropMinD = 0.0001;
 dropMaxD = 0.1;
 
 # Number of Dropplets [n]
-numDrops = 100;
+numDrops = 10;
 
 # Initial Height [m]
 h = 1;
@@ -31,7 +31,7 @@ cD = .04;
 # Time Step [s]
 dt = .001;
 
-# Itterations [n]
+# Iterations [n]
 I = 10000;
 
 dropDs = np.zeros(numDrops);
@@ -39,14 +39,16 @@ dropAs = np.zeros(numDrops);
 
 massD = np.zeros(numDrops);
 forceDrag = np.zeros((I, numDrops));
-a = np.zeros((I, numDrops));
 
 X = np.zeros((I, numDrops));
 vX = np.zeros((I, numDrops));
 vX[0,:] = v0x;
+aX = np.zeros((I, numDrops));
 
 Y = np.zeros((I, numDrops));
+Y[0,:] = h; # set first y positions of each particle to h
 vY = np.zeros((I, numDrops));
+aY = np.zeros((I, numDrops));
 
 # Calculations
 for i in range(numDrops) :
@@ -69,17 +71,24 @@ t = 0;
 for i in range(I) :
     t = t+dt;
     for j in range(numDrops) :
-        # Generate Y positions as particle falls
-        Y[i,j] = h-0.5*9.81*t**2;
         
-        forceDrag[i,j] = 0.5*rhoA*cD*dropAs[j]*vX[i,j]**2;
-        a = forceDrag[i,j]/massD[j];
+        # TODO do something with this, rename for x and make another for y, get rid of it, or save the magnitude
+        forceDrag[i,j] = -0.5*rhoA*cD*dropAs[j]*vX[i,j]**2; 
+        
+        # NOTE drag is assumed to be negative for x and positive for y. This may not be the case. Ideally, it would depend on the velocity vector
+        aX = forceDrag[i,j]/massD[j];
+        # aY = 0.5*rhoA*cD*dropAs[j]*vY[i,j]**2/massD[j] - 9.81;
+        aY = 0.5*rhoA*cD*dropAs[j]*vY[i,j]**2/massD[j] - 9.81;
         
         if i < I-1:
-            vX[i+1,j] = vX[i,j]-a*dt;
+            # Apply drag
+            
+            vX[i+1,j] = vX[i,j]+aX*dt;
+            vY[i+1,j] = vY[i,j]+aY*dt;
         
-            # Generate X positions without drag
-            X[i+1,j] = X[i,j]+vX[i,j]*dt-0.5*a*dt**2;
+            # Generate X and Y positions with drag and gravity
+            X[i+1,j] = X[i,j]+vX[i,j];
+            Y[i+1,j] = Y[i,j]+vY[i,j];
         
 
 for i in range(numDrops) :
